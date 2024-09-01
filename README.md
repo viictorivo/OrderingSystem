@@ -1,4 +1,4 @@
-## Description teste
+## Description
 
 Projeto desenvolvido como trabalho final do curso Software Architecture da Pós-Tech Fiap 2024.
 
