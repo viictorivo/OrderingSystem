@@ -19,7 +19,7 @@ terraform {
 
   backend "remote" {
     hostname     = "app.terraform.io"
-    organization = "ordersystem"
+    organization = "victor-postech-fiap"
 
     workspaces {
       name = "AWSEKS"
