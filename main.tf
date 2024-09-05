@@ -1,34 +1,66 @@
 ###### root/main.tf
 
 module "eks" {
-  source                  = "./modules/eks"
-  aws_public_subnet       = module.vpc.aws_public_subnet
-  vpc_id                  = module.vpc.vpc_id
-  cluster_name            = "module-eks-${random_string.suffix.result}"
-  endpoint_public_access  = true
-  endpoint_private_access = false
-  public_access_cidrs     = ["0.0.0.0/0"]
-  node_group_name         = "ordersystem"
-  scaling_desired_size    = 1
-  scaling_max_size        = 1
-  scaling_min_size        = 1
-  instance_types          = ["t2.micro"]
-  key_pair                = "TestKeyPair"
-}
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 20.0"
 
-module "vpc" {
-  source                  = "./modules/vpc"
-  public_access_cidrs     = ["0.0.0.0/0"]
-  node_group_name         = "ordersystem"
-  scaling_desired_size    = 1
-  scaling_max_size        = 1
-  scaling_min_size        = 1
-  instance_types          = ["t2.micro"]
-  key_pair                = "TestKeyPair"
-  aws_public_subnet       = module.vpc.aws_public_subnet
-  endpoint_public_access  = true
-  endpoint_private_access = false
-  cluster_name            = "module-eks-${random_string.suffix.result}"
-  vpc_id                  = module.vpc.vpc_id
+  cluster_name    = "my-cluster"
+  cluster_version = "1.30"
 
+  cluster_endpoint_public_access = true
+
+  cluster_addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+  }
+
+  vpc_id                   = "vpc-1234556abcdef"
+  subnet_ids               = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
+  control_plane_subnet_ids = ["subnet-xyzde987", "subnet-slkjf456", "subnet-qeiru789"]
+
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    instance_types = ["t2.micro", "t2.micro", "t2.micro", "t2.micro"]
+  }
+
+  eks_managed_node_groups = {
+    example = {
+      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      ami_type       = "AL2023_x86_64_STANDARD"
+      instance_types = ["t2.micro"]
+
+      min_size     = 2
+      max_size     = 10
+      desired_size = 2
+    }
+  }
+
+  # Cluster access entry
+  # To add the current caller identity as an administrator
+  enable_cluster_creator_admin_permissions = true
+
+  access_entries = {
+    # One access entry with a policy associated
+    example = {
+      kubernetes_groups = []
+      principal_arn     = "arn:aws:iam::123456789012:role/something"
+
+      policy_associations = {
+        example = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
+    }
+  }
+
+  tags = {
+    Environment = "dev"
+    Terraform   = "true"
+  }
 }
