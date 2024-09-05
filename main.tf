@@ -18,7 +18,7 @@ module "eks" {
 
 module "vpc" {
   source                  = "./modules/vpc"
-  tags                    = "ordersystem"
+  public_access_cidrs     = ["0.0.0.0/0"]
   node_group_name         = "ordersystem"
   scaling_desired_size    = 1
   scaling_max_size        = 1
