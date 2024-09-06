@@ -47,3 +47,8 @@ jobs:
         id: plan
         run: terraform plan
         continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+        continue-on-error: true
