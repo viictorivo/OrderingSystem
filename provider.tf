@@ -16,12 +16,6 @@ terraform {
     }
 
   }
-
-  provider "aws" {
-  region = "us-east-1"
-  }
-
-
   backend "remote" {
     hostname     = "app.terraform.io"
     organization = "victor-postech-fiap"
@@ -30,6 +24,10 @@ terraform {
       name = "AWSEKS"
     }
   }
+}
+
+provider "aws" {
+  region = "us-east-1"
 }
 
 
@@ -45,11 +43,6 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 
 }
-
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "random_string" "suffix" {
   length  = 5
   special = false
