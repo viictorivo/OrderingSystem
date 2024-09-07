@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.15.0"
+      version = ">= 5.61.0"
     }
 
     random = {
@@ -17,6 +17,11 @@ terraform {
 
   }
 
+  provider "aws" {
+  region = "us-east-1"
+  }
+
+
   backend "remote" {
     hostname     = "app.terraform.io"
     organization = "victor-postech-fiap"
@@ -27,7 +32,7 @@ terraform {
   }
 }
 
-/*
+
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
@@ -40,11 +45,9 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 
 }
-*/
-
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-east-1"
 }
 
 resource "random_string" "suffix" {
