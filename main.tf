@@ -17,10 +17,10 @@ terraform {
   required_version = ">= 1.1.0"
 
   cloud {
-    organization = "DevopsFiap"
+    organization = "victor-postech-fiap"
 
     workspaces {
-      name = "gh-actions"
+      name = "AWSEKS"
     }
   }
 }
