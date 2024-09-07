@@ -16,5 +16,3 @@ jobs:
     uses: viictorivo/OrderingSystem/.github/workflows/aws_tf_apply.yml@main
     with:
       gh_environment: dev
-    env:
-      cli_config_credentials_token: "${{ secrets.TF_API_TOKEN }}"
