@@ -10,8 +10,6 @@ jobs:
     uses: viictorivo/OrderingSystem/.github/workflows/aws_tf_plan.yml@main
     with:
       gh_environment: dev
-    env:
-      cli_config_credentials_token: "${{ secrets.TF_API_TOKEN }}"
 
   Apply:
     needs: Plan
