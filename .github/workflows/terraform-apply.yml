@@ -1,19 +1,19 @@
 name: "Terraform Apply"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
 
 env:
-  TF_CLOUD_ORGANIZATION: "Yvictor-postech-fiap"
+  TF_CLOUD_ORGANIZATION: "victor-postech-fiap"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "AWSEKS"
   CONFIG_DIRECTORY: "./"
 
 jobs:
   terraform:
-    if: github.repository != 'viictorivo/OrderingSystem'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
