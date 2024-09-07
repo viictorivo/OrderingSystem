@@ -1,66 +1,84 @@
-###### root/main.tf
 
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+# Fiap Pos tech
 
-  cluster_name    = "my-cluster"
-  cluster_version = "1.30"
-
-  cluster_endpoint_public_access = true
-
-  cluster_addons = {
-    coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
-    vpc-cni                = {}
-  }
-
-  vpc_id                   = "vpc-1234556abcdef"
-  subnet_ids               = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
-  control_plane_subnet_ids = ["subnet-xyzde987", "subnet-slkjf456", "subnet-qeiru789"]
-
-  # EKS Managed Node Group(s)
-  eks_managed_node_group_defaults = {
-    instance_types = ["t2.micro", "t2.micro", "t2.micro", "t2.micro"]
-  }
-
-  eks_managed_node_groups = {
-    example = {
-      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t2.micro"]
-
-      min_size     = 2
-      max_size     = 10
-      desired_size = 2
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.52.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.4.3"
     }
   }
+  required_version = ">= 1.1.0"
 
-  # Cluster access entry
-  # To add the current caller identity as an administrator
-  enable_cluster_creator_admin_permissions = true
+  cloud {
+    organization = "victor-postech-fiap"
 
-  access_entries = {
-    # One access entry with a policy associated
-    example = {
-      kubernetes_groups = []
-      principal_arn     = "arn:aws:iam::123456789012:role/something"
-
-      policy_associations = {
-        example = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
-          access_scope = {
-            namespaces = ["default"]
-            type       = "namespace"
-          }
-        }
-      }
+    workspaces {
+      name = "AWSEKS"
     }
   }
+}
 
-  tags = {
-    Environment = "dev"
-    Terraform   = "true"
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "random_pet" "sg" {}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+resource "aws_instance" "web" {
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.web-sg.id]
+
+  user_data = <<-EOF
+              #!/bin/bash
+              apt-get update
+              apt-get install -y apache2
+              sed -i -e 's/80/8080/' /etc/apache2/ports.conf
+              echo "<style> body {background-color: black;}</style><img style="text-align:center" src="https://postech.fiap.com.br/gifs/loader.gif"><img src="https://postech.fiap.com.br/imgs/fiap-plus-alura/fiap_alura.png">" > /var/www/html/index.html
+              systemctl restart apache2
+              EOF
+}
+
+resource "aws_security_group" "web-sg" {
+  name = "${random_pet.sg.id}-sg"
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  // connectivity to ubuntu mirrors is required to run `apt-get update` and `apt-get install apache2`
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "web-address" {
+  value = "${aws_instance.web.public_dns}:8080"
 }
