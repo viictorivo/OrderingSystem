@@ -10,23 +10,23 @@ module "eks" {
   }
 
   vpc_id = module.vpc.vpc_id
-}
-resource "aws_eks_node_group" "order-system-node-group" {
-  cluster_name    = aws_eks_cluster.example.name
-  node_group_name = "example"
-  node_role_arn   = aws_iam_role.example.arn
-  subnet_ids      = aws_subnet.example[*].id
+  resource "aws_eks_node_group" "order-system-node-group" {
+    cluster_name    = aws_eks_cluster.example.name
+    node_group_name = "example"
+    node_role_arn   = aws_iam_role.example.arn
+    subnet_ids      = aws_subnet.example[*].id
 
-  scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
-  }
+    scaling_config {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+    }
 
-  update_config {
-    max_unavailable = 1
+    update_config {
+      max_unavailable = 1
+    }
+    
   }
-  
 }
 
 data "aws_eks_cluster" "cluster" {
