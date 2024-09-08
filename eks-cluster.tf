@@ -3,7 +3,6 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
   cluster_version = "1.18"
-  subnets         = module.vpc.public_subnets
   tags = {
     Environment = "training"
     GithubRepo  = "terraform-aws-eks"
@@ -12,26 +11,22 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  workers_group_defaults = {
-    root_volume_type = "gp2"
+resource "aws_eks_node_group" "order-system-node-group" {
+  cluster_name    = aws_eks_cluster.example.name
+  node_group_name = "example"
+  node_role_arn   = aws_iam_role.example.arn
+  subnet_ids      = aws_subnet.example[*].id
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 1
   }
 
-  worker_groups = [
-    {
-      name                          = "worker-group-1"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      asg_desired_capacity          = 1
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
-    },
-    {
-      name                          = "worker-group-2"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 1
-    },
-  ]
+  update_config {
+    max_unavailable = 1
+  }
+  
 }
 
 data "aws_eks_cluster" "cluster" {
