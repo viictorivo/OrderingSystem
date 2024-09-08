@@ -50,8 +50,8 @@ resource "aws_security_group" "node_group_one" {
   }
 }
 
-resource "aws_iam_role" "cloudquicklabs" {
-  name = "eks-cluster-cloudquicklabs"
+resource "aws_iam_role" "order-system" {
+  name = "eks-cluster-order-system"
 
   assume_role_policy = <<POLICY
 {
