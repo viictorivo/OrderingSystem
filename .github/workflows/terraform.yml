@@ -7,10 +7,6 @@ on:
     paths:
       - infra/**
 
-  pull_request: # [master, next]
-    paths:
-      - infra/**
-
 jobs:
   terraform:
     name: "Terraform"
