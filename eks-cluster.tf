@@ -10,7 +10,7 @@ module "eks" {
   }
 
   vpc_id = module.vpc.vpc_id
-
+}
 resource "aws_eks_node_group" "order-system-node-group" {
   cluster_name    = aws_eks_cluster.example.name
   node_group_name = "example"
