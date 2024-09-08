@@ -1,4 +1,3 @@
-
 module "eks" {
   source                  = "./modules/eks"
   aws_public_subnet       = module.vpc.aws_public_subnet
