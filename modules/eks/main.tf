@@ -13,7 +13,7 @@ resource "aws_eks_cluster" "order-system" {
 
 resource "aws_eks_node_group" "order-system" {
   cluster_name    = aws_eks_cluster.order-system.name
-  role_arn = aws_iam_role.order-system.arn
+  node_role_arn   = aws_iam_role.order-system.arn
   node_group_name = var.node_group_name
   subnet_ids      = var.aws_public_subnet
   instance_types  = var.instance_types
@@ -52,20 +52,5 @@ resource "aws_security_group" "node_group_one" {
 
 resource "aws_iam_role" "order-system" {
   name = "eks-cluster-order-system"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
 }
 
