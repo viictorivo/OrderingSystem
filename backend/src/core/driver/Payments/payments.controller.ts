@@ -4,7 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
-  Post,
+  Patch
 } from '@nestjs/common';
 
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
