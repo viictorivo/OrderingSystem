@@ -41,8 +41,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t felipelima94/order-system-api .
-        docker push felipelima94/order-system-api
+        docker build -t viictorivo/order-system-api:v6 .
+        docker push viictorivo/order-system-api:v6
 
 
     - name: Configure AWS credentials
