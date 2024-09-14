@@ -1,0 +1,68 @@
+name: Deploy
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2.5.0
+
+    - name: Docker meta
+      id: docker_meta
+      uses: crazy-max/ghaction-docker-meta@v1
+      with: 
+        images: felipelima94/order-system-api:v6
+        tag-sha: true
+
+    - name: QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: login to Dockerhub
+      uses: docker/login-action@v1
+      with: 
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        tags: ${{ steps.docker_meta.outputs.tags }}
+        labels: ${{ steps.docker_meta.outputs.labels }}
+    
+    - name: install doctl
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with: 
+        context: ./backend
+        file: ./dockerfile
+        platforms: linux/amd64, linux/arm64, linux386
+        tags: ${{steps.docker_meta.outputs.tags}}
+        labels: ${{steps.docker_meta.outputs.tags}}
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Deploy to EKS
+      run: |
+        aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+        kubectl set image deployment/your-deployment your-container=${{ secrets.DOCKERHUB_USERNAME }}/order-system-api:v6
+
+
+
+
+
+
