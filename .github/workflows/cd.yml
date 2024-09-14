@@ -38,7 +38,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
-    ß
+        
     - name: install doctl
       id: docker_build
       uses: docker/build-push-action@v2
