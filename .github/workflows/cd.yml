@@ -45,7 +45,7 @@ jobs:
       with: 
         context: ./backend
         file: ./dockerfile
-        platforms: linux/amd64, linux/arm64, linux386
+        platforms: linux/amd64, linux/arm64
         tags: ${{steps.docker_meta.outputs.tags}}
         labels: ${{steps.docker_meta.outputs.tags}}
 
