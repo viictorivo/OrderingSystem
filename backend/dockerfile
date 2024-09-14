@@ -1,14 +1,20 @@
-FROM --platform=linux/amd64 node:22-alpine
+FROM node:18 as builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY *.* .
 
-RUN npm ci
+RUN npm install
+RUN npm run build
 
-COPY . .
+FROM node:18 as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json .
 
 EXPOSE 3000
 
-# CMD [ "npm", "run", "start" ]
-ENTRYPOINT [ "npm", "run", "start" ]
+CMD [ "npm", "run", "start:prod" ]
