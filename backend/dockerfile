@@ -2,7 +2,7 @@ FROM node:20 as builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY ./backend/package.json ./
 COPY yarn.lock ./
 
 COPY . .
