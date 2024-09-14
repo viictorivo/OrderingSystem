@@ -22,7 +22,7 @@ jobs:
       id: docker_meta
       uses: crazy-max/ghaction-docker-meta@v1
       with: 
-        images: viictorivo/teste2
+        images: felipelima94/order-system-api
         tag-sha: true
 
     - name: QEMU
@@ -38,13 +38,13 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
-    
+    ß
     - name: install doctl
       id: docker_build
       uses: docker/build-push-action@v2
       with: 
-        context: ./backend
-        file: ./dockerfile
+        context: .
+        file: ./backend/dockerfile
         platforms: linux/amd64, linux/arm64
         tags: ${{steps.docker_meta.outputs.tags}}
         labels: ${{steps.docker_meta.outputs.tags}}
