@@ -1,4 +1,4 @@
-FROM node:20 AS builder
+FROM --platform=linux/amd64 node:20 as builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY . .
 RUN yarn
 RUN yarn build
 
-FROM node:18 as runner 
+FROM --platform=linux/amd64 node:20 as runner 
 
 ENV DATABASE_URL="uri"
 ENV TOKEN_MERCADO_PAGO="uri"
