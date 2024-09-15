@@ -5,7 +5,7 @@ WORKDIR /app
 COPY backend/package.json ./
 COPY backend/yarn.lock ./
 COPY backend/tsconfig.json ./
-COPY .backend/prisma .backend/prisma
+COPY ./backend/prisma ./backend/prisma
 
 COPY . .
 
