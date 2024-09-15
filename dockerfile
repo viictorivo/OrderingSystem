@@ -2,10 +2,10 @@ FROM node:20 as builder
 
 WORKDIR /app
 
-COPY ./backend/package.json ./
-COPY ./backend/yarn.lock ./
-COPY ./backend/tsconfig.json ./
-COPY ./backend/prisma ./prisma
+COPY ./package.json ./
+COPY ./yarn.lock ./
+COPY ./tsconfig.json ./
+COPY ./prisma ./prisma
 
 COPY . .
 
@@ -13,12 +13,6 @@ RUN yarn
 RUN yarn build
 
 FROM node:20 as runner
-
-ENV DATABASE_URL="uri"
-ENV TOKEN_MERCADO_PAGO="uri"
-ENV USERID="uri"
-ENV POSID="uri"
-ENV NODE_LOCAL_PORT="uri"
 
 WORKDIR /app
 
