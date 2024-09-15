@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  email     String?  @unique
+  name      String?
+  cpf       String?  @unique
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Order     Orders[]
+}
+
+model Payments {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+  salesOrderID   String
+  inStoreOrderID String
+  qrCode         String   @unique
+  order          Orders   @relation(fields: [orderID], references: [id])
+  orderID        Int
+  status         String   @default("PENDING")
+}
+
+model Orders {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  amount        Float
+  salesOrderID  String
+  customer      Customer        @relation(fields: [customerID], references: [id])
+  customerID    Int
+  orderItens    OrderItens[]
+  orderTracking OrderTracking[]
+  payments      Payments[]
+}
+
+model OrderItens {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  name      String
+  quantity  Int
+  priceUnit Float
+  order     Orders   @relation(fields: [orderID], references: [id])
+  orderID   Int
+  products  Products @relation(fields: [productID], references: [id])
+  productID Int
+}
+
+model Products {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now())
+  name       String
+  priceUnit  Float
+  categories Categories   @relation(fields: [categoryID], references: [id])
+  categoryID Int
+  OrderItens OrderItens[]
+}
+
+model Categories {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  type      String
+  Products  Products[]
+}
+
+model OrderTracking {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+  salesOrderID String
+  status       String   @default("CREATED")
+  order        Orders   @relation(fields: [orderID], references: [id])
+  orderID      Int
+}
