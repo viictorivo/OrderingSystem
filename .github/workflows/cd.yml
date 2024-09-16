@@ -44,7 +44,7 @@ jobs:
       uses: docker/build-push-action@v2
       with: 
         context: .
-        file: ./backend/dockerfile
+        file: ./dockerfile
         platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
         push: true
         cache-from: type=registry,ref=viictorivo/teste2:latest
