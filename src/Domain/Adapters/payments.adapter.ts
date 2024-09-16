@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/Infrastructure/Apis/prisma.service';
+import { PrismaService } from '../../Infrastructure/Apis/prisma.service';
 import { Payments } from '../Interfaces/payments';
 import { PaymentsRepository } from '../Repositories/paymentsRepository';
 

@@ -4,7 +4,7 @@ import {
   HealthIndicator,
   HealthIndicatorResult,
 } from '@nestjs/terminus';
-import { PrismaService } from 'src/Infrastructure/Apis/prisma.service';
+import { PrismaService } from '../../Infrastructure/Apis/prisma.service';
 
 @Injectable()
 export class PrismaHealthIndicator extends HealthIndicator {

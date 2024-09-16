@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { differenceInMinutes, format } from 'date-fns';
 import { Status } from 'src/Domain/Enums/status';
-import { PrismaService } from 'src/Infrastructure/Apis/prisma.service';
+import { PrismaService } from '../../Infrastructure/Apis/prisma.service';
 import { OrdersTracking } from '../Interfaces/ordersTracking';
 import { OrdersTrackingRepository } from '../Repositories/ordersTrackingRepository';
 

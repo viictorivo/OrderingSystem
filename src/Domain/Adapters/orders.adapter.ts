@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { format } from 'date-fns';
 import { Status } from 'src/Domain/Enums/status';
-import { PrismaService } from 'src/Infrastructure/Apis/prisma.service';
+import { PrismaService } from '../../Infrastructure/Apis/prisma.service';
 import { QRCodeService } from 'src/Infrastructure/Apis/qrcode.service';
 import { ConfirmPaymentEvent } from 'src/Infrastructure/Events/confirmPaymentEvent';
 import { PaymentEvents } from '../Enums/paymentStatus';
