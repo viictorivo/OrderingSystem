@@ -15,6 +15,8 @@ RUN yarn build
 
 FROM node:20 as runner 
 
+WORKDIR /app 
+
 ENV DATABASE_URL="uri"
 ENV TOKEN_MERCADO_PAGO="uri"
 ENV USERID="uri"
@@ -27,6 +29,8 @@ COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/dist ./dist/
 COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/prisma ./prisma/
+
+RUN yarn generate
 
 EXPOSE 3000
 
