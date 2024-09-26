@@ -62,8 +62,8 @@ jobs:
 
     - name: Deploy to EKS
       run: |
-        kubectl apply -f api-svc/api-deployment.yaml
-        kubectl apply -f api-svc/api-svc.yaml
+        kubectl apply -f api-svc/api-deployment.yml
+        kubectl apply -f api-svc/api-svc.yml
 
 
 
