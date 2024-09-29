@@ -1,4 +1,4 @@
-## Description of project
+## Description 
 
 Backend do projeto Sistema de autoatendimento de fast food
 
