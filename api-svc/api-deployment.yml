@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: order-system-api-container
-          image: felipelima94/order-system-api:v6
+          image: viictorivo/teste2:latest
           ports:
             - containerPort: 3000
           envFrom:

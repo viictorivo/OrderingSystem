@@ -22,14 +22,14 @@ jobs:
       id: docker_meta
       uses: crazy-max/ghaction-docker-meta@v1
       with: 
-        images: felipelima94/order-system-api
+        images: viictorivo/teste2
         tag-sha: true
 
     - name: QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
 
     - name: Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: login to Dockerhub
       uses: docker/login-action@v1
@@ -44,22 +44,30 @@ jobs:
       uses: docker/build-push-action@v2
       with: 
         context: .
-        file: ./backend/dockerfile
-        platforms: linux/amd64, linux/arm64
-        tags: ${{steps.docker_meta.outputs.tags}}
-        labels: ${{steps.docker_meta.outputs.tags}}
+        file: ./dockerfile
+        platforms: linux/amd64
+        push: true
+        cache-from: type=registry,ref=viictorivo/teste2:latest
+        cache-to: type=inline
+        tags: |
+          viictorivo/teste2:latest
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: us-east-1
 
     - name: Deploy to EKS
       run: |
-        aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-        kubectl set image deployment/your-deployment your-container=${{ secrets.DOCKERHUB_USERNAME }}/order-system-api:v6
+        aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }}
+        kubectl apply -f api-svc/configmap-api.yml
+        kubectl apply -f api-svc/api-svc.yml
+        kubectl apply -f api-svc/hpa.yml
+        kubectl apply -f api-svc/api-deployment.yml
+        
 
 
 
