@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: order-system-api-container
-          image: viictorivo/teste2:latest
+          image: viictorivo/ordersystem:latest
           ports:
             - containerPort: 3000
           envFrom:
