@@ -31,9 +31,6 @@ COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/prisma ./prisma/
 
 RUN yarn generate
-RUN yarn build
-RUN yarn migrate:deploy
-RUN yarn migrate:status
 
 EXPOSE 3000
 
