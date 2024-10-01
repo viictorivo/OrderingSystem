@@ -47,10 +47,10 @@ jobs:
         file: ./dockerfile
         platforms: linux/amd64
         push: true
-        cache-from: type=registry,ref=viictorivo/teste2:latest
+        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ordersystem:latest
         cache-to: type=inline
         tags: |
-          viictorivo/teste2:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/ordersystem:latest
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -67,6 +67,7 @@ jobs:
         kubectl apply -f api-svc/api-svc.yml
         kubectl apply -f api-svc/hpa.yml
         kubectl apply -f api-svc/api-deployment.yml
+        kubectl set image deployment/api-deployment order-system-api-container=${{ secrets.DOCKERHUB_USERNAME }}/ordersystem:latest
         
 
 
